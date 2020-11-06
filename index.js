@@ -1,10 +1,12 @@
 // code away!
 const express = require("express");
 const server = require("./server");
+const logger = require("./middleware/logger");
 
 server.use(express.json());
 
 //middleware will go here
+server.use(logger("long"));
 
 //Post and User router
 const postRouter = require("./posts/postRouter");

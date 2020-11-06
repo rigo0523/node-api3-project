@@ -1,7 +1,7 @@
 const PostDb = require("../posts/postDb");
 
 /// LOOKS FOR findById MIDDLEWARE /api/posts/:id
-function checkUserID() {
+function checkPostID() {
   return (req, res, next) => {
     PostDb.getById(req.params.id)
       .then((postById) => {
@@ -50,6 +50,6 @@ function deletePostID() {
 }
 
 module.exports = {
-  checkUserID,
+  checkPostID,
   deletePostID,
 };
