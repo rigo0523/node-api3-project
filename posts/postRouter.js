@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkUserID, deletePostID } = require("../middleware/posts");
+const { checkPostID, deletePostID } = require("../middleware/posts");
 
 const PostDb = require("./postDb");
 const router = express.Router();
@@ -24,20 +24,20 @@ router.get("/", (req, res) => {
 });
 
 //GET by ID /api/posts/:id
-router.get("/:id", checkUserID(), (req, res) => {
+router.get("/:id", checkPostID(), (req, res) => {
   // do your magic!
   res.status(200).json(req.postById);
 });
 
 //DELETE by ID /api/posts/:id
-router.delete("/:id", checkUserID(), deletePostID(), (req, res) => {
+router.delete("/:id", checkPostID(), deletePostID(), (req, res) => {
   // do your magic!
   //MIDDLE WARE on posts.js
   res.status(200).json(req.deletePost);
 });
 
 //PUT by ID /api/posts/:id
-router.put("/:id", checkUserID(), (req, res) => {
+router.put("/:id", checkPostID(), (req, res) => {
   // do your magic!
 
   PostDb.update(req.params.id, req.body)
@@ -49,6 +49,7 @@ router.put("/:id", checkUserID(), (req, res) => {
       }
     })
     .catch((error) => {
+      console.log(error);
       res.status(500).json({ message: "server error " });
     });
 });
