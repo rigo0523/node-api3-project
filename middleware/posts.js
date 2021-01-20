@@ -49,7 +49,17 @@ function deletePostID() {
   };
 }
 
+function checkPostData() {
+  return (req, res, next) => {
+    if (!req.body.user_id || !req.body.text) {
+      return res.status(400).json({ message: "missing text/user_id field" });
+    }
+    next();
+  };
+}
+
 module.exports = {
   checkPostID,
   deletePostID,
+  checkPostData,
 };

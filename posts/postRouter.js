@@ -1,5 +1,9 @@
 const express = require("express");
-const { checkPostID, deletePostID } = require("../middleware/posts");
+const {
+  checkPostID,
+  deletePostID,
+  checkPostData,
+} = require("../middleware/posts");
 
 const PostDb = require("./postDb");
 const router = express.Router();
@@ -44,6 +48,22 @@ router.put("/:id", checkPostID(), (req, res) => {
     .then((updatePost) => {
       if (updatePost) {
         res.status(200).json(updatePost);
+      } else {
+        res.status(400).json({ message: "cant update this postID" });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "server error " });
+    });
+});
+
+//PUT by ID /api/posts
+router.post("/", checkPostData(), (req, res) => {
+  PostDb.insert(req.body)
+    .then((newPost) => {
+      if (newPost) {
+        res.status(201).json(newPost);
       } else {
         res.status(400).json({ message: "cant update this postID" });
       }

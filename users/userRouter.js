@@ -7,8 +7,8 @@ const {
   checkUpdateData,
 } = require("../middleware/users");
 
-router.post("/", (req, res) => {
-  // do your magic!
+router.post("/", checkUpdateData(), (req, res) => {
+  // checkUpdateData(), checks if no name key, enter 'name' warning
   UserDb.insert(req.body)
     .then((postUser) => {
       if (postUser) {
@@ -113,7 +113,7 @@ router.put("/:id", checkUpdateData(), checkUserID(), (req, res) => {
 
   UserDb.update(id, changes)
     .then((updated) => {
-      res.status(200).json(updated);
+      res.status(200).json({ updated_user: updated });
     })
     .catch((error) => {
       console.log(error);
