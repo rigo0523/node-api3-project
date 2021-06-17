@@ -1,20 +1,21 @@
 const express = require("express");
+const router = express.Router();
+
 const {
   checkPostID,
   deletePostID,
   checkPostData,
 } = require("../middleware/posts");
 
-const PostDb = require("./postDb");
-const router = express.Router();
+const Posts = require("./postsHelper");
 
 //GET /api/posts
 router.get("/", (req, res) => {
   // do your magic!
-  PostDb.get(req.params.id)
+  Posts.get(req.params.id)
     .then((post) => {
       if (post) {
-        res.status(200).json({ message: "got post", PostDb: post });
+        res.status(200).json({ message: "got post", Posts: post });
       } else {
         res.status(404).json({ message: "no list of posts found" });
       }
@@ -44,7 +45,7 @@ router.delete("/:id", checkPostID(), deletePostID(), (req, res) => {
 router.put("/:id", checkPostID(), (req, res) => {
   // do your magic!
 
-  PostDb.update(req.params.id, req.body)
+  Posts.update(req.params.id, req.body)
     .then((updatePost) => {
       if (updatePost) {
         res.status(200).json(updatePost);
@@ -60,7 +61,7 @@ router.put("/:id", checkPostID(), (req, res) => {
 
 //PUT by ID /api/posts
 router.post("/", checkPostData(), (req, res) => {
-  PostDb.insert(req.body)
+  Posts.insert(req.body)
     .then((newPost) => {
       if (newPost) {
         res.status(201).json(newPost);

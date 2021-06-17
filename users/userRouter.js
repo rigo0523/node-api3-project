@@ -1,18 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const UserDb = require("./userDb");
+const User = require("./usersHelper");
 const {
   checkUserID,
   deleteUserID,
   checkUpdateData,
 } = require("../middleware/users");
 
+//api/users GET ALL USERS
+router.get("/", (req, res) => {
+  // do your magic!
+  User.get(req.body)
+    .then((getUsers) => {
+      if (getUsers) {
+        res.status(200).json({ message: "users found", Users_list: getUsers });
+      } else {
+        res.status(400).json({ message: "no users found" });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "something went wrong, please try again later",
+      });
+    });
+});
+
+//api/users/:id GET BY ID
+router.get("/:id", checkUserID(), (req, res) => {
+  // do your magic!
+  //middleware from middleware/users.js
+  res.status(200).json({ message: "User By Id found", UserID: req.userById });
+});
+
+//api/users POST
 router.post("/", checkUpdateData(), (req, res) => {
-  // checkUpdateData(), checks if no name key, enter 'name' warning
-  UserDb.insert(req.body)
+  // checkUpdateData(), checks if no name key, enter 'name' warning coming from middleware users.js, used to check property on both update and post
+  User.insert(req.body)
     .then((postUser) => {
       if (postUser) {
-        res.status(200).json({ message: "users found", UserDb: postUser });
+        res.status(200).json({ message: "users found", User: postUser });
       } else {
         res.status(400).json({ message: "no users found" });
       }
@@ -26,7 +53,9 @@ router.post("/", checkUpdateData(), (req, res) => {
 });
 
 router.post("/:id/posts", checkUserID(), (req, res) => {
+  //checkuser ID coming from middleware on users.js, just reassures that we have the correct ID
   // do your magic!
+  //not working, need to look into this one
   const user_id = req.params.id;
   const text = req.body;
   if (!text) {
@@ -34,9 +63,11 @@ router.post("/:id/posts", checkUserID(), (req, res) => {
       .status(400)
       .json({ errorMessage: "Please provide text for comment" });
   }
-  const newUserPost = { text, user_id };
-  UserDb.insert(newUserPost)
+
+  User.insert(text) // added another help funciton
+    //which is inserUsertPOST
     .then((newPost) => {
+      console.log(newPost, "newpost---->");
       if (newPost) {
         res
           .json(201)
@@ -53,33 +84,9 @@ router.post("/:id/posts", checkUserID(), (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
-  // do your magic!
-  UserDb.get(req.body)
-    .then((getUsers) => {
-      if (getUsers) {
-        res.status(200).json({ message: "users found", UserDb: getUsers });
-      } else {
-        res.status(400).json({ message: "no users found" });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({
-        message: "something went wrong, please try again later",
-      });
-    });
-});
-
-router.get("/:id", checkUserID(), (req, res) => {
-  // do your magic!
-  //middleware from middleware/posts.js
-  res.status(200).json({ message: "User By Id found", UserID: req.userById });
-});
-
 router.get("/:id/posts", checkUserID(), (req, res) => {
   // do your magic!
-  UserDb.getUserPosts(req.params.id)
+  User.getUserPosts(req.params.id)
     .then((findUserId) => {
       if (findUserId) {
         res
@@ -100,7 +107,7 @@ router.get("/:id/posts", checkUserID(), (req, res) => {
 //DELETE
 router.delete("/:id", checkUserID(), deleteUserID(), (req, res) => {
   // do your magic!
-  //MIDDLEWARE ADDED from users middleware
+  //MIDDLEWARE ADDED from users middleware users.js
   res
     .status(200)
     .json({ message: "Deleted User", UserDeleted: req.deleteUser });
@@ -111,7 +118,7 @@ router.put("/:id", checkUpdateData(), checkUserID(), (req, res) => {
   const changes = req.body;
   const { id } = req.params;
 
-  UserDb.update(id, changes)
+  User.update(id, changes)
     .then((updated) => {
       res.status(200).json({ updated_user: updated });
     })

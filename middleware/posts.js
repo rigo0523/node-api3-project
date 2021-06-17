@@ -1,4 +1,4 @@
-const PostDb = require("../posts/postDb");
+const PostDb = require("../posts/postsHelper");
 
 /// LOOKS FOR findById MIDDLEWARE /api/posts/:id
 function checkPostID() {
