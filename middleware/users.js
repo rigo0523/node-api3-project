@@ -1,9 +1,9 @@
-const UserDb = require("../users/userDb");
+const Users = require("../users/usersHelper");
 
 /// LOOKS FOR findById MIDDLEWARE /api/posts/:id
 function checkUserID() {
   return (req, res, next) => {
-    UserDb.getById(req.params.id)
+    Users.getById(req.params.id)
       .then((userById) => {
         if (userById) {
           //middleware
@@ -25,7 +25,7 @@ function checkUserID() {
 function deleteUserID() {
   return (req, res, next) => {
     //import Get BY ID from userRouter here
-    UserDb.remove(req.params.id)
+    Users.remove(req.params.id)
       .then((deleteUser) => {
         if (deleteUser) {
           //apply middleware and sent to USER DELETE router
@@ -45,6 +45,7 @@ function deleteUserID() {
 }
 
 function checkUpdateData() {
+  // can be used for POSTING A USER TOO
   return (req, res, next) => {
     if (!req.body.name) {
       return res.status(400).json({ message: "missing name field" });
