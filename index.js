@@ -1,25 +1,8 @@
-// code away!
-const express = require("express");
-const server = require("./server");
-const logger = require("./middleware/logger");
+require("dotenv").config();
+const server = require("./api/server");
 
-server.use(express.json());
-
-//middleware will go here
-server.use(logger("long"));
-
-//Post and User router
-const postRouter = require("./posts/postRouter");
-const userRouter = require("./users/userRouter");
-
-server.use("/api/posts", postRouter);
-server.use("/api/users", userRouter);
-
-///MIDDLEWARE FOR CATCH errors, when adding 4 parementers it knows
-//its handling an error from CATCH
-server.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({
-    message: "something went wrong, please try again later",
-  });
+// port 5000
+const port = process.env.PORT || 8000;
+server.listen(port, () => {
+  console.log(`server is listening on port ${port}...`);
 });
