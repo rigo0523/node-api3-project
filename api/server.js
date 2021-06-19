@@ -6,16 +6,16 @@ const logger = require("../middleware/logger");
 //serverr
 const server = express();
 
-//middleware will go here global
-server.use(helmet());
-// server.use(cors());
-server.use(logger("long"));
-server.use(express.json());
-
 //Post and User router imports
 const postRouter = require("../posts/postRouter");
 const userRouter = require("../users/userRouter");
 const welcomeRouter = require("../welcomeRouter/welcome-router");
+
+//middleware will go here global
+server.use(helmet()); // adds security headers to prevent hacker attacks
+server.use(cors()); // allows requests from any client
+server.use(logger("long")); // middleware to show the client requesting and method plus api address
+server.use(express.json());
 
 //server endpoints ---->
 server.use("/", welcomeRouter);
