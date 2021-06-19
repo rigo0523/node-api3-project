@@ -8,7 +8,7 @@ const server = express();
 
 //middleware will go here global
 server.use(helmet());
-server.use(cors());
+// server.use(cors());
 server.use(logger("long"));
 server.use(express.json());
 
@@ -20,7 +20,8 @@ const welcomeRouter = require("../welcomeRouter/welcome-router");
 //server endpoints ---->
 server.use("/", welcomeRouter);
 server.use("/api/posts", postRouter);
-server.use("/api/users", userRouter);
+server.use("/api/users", userRouter); // can also add cors(), in the serverr endpoint
+//so like /api/users, cors(), userRouter) to only show endpoints that we want users to see
 
 ///MIDDLEWARE FOR CATCH errors, when adding 4 parementers it knows
 //its handling an error from CATCH
